@@ -7,12 +7,20 @@
 
 class Collectable : public GameObject {
 
-  b2Body *Body;
-
   sf::Sprite sprite_;
 
 public:
-  Collectable(Level &level, float x, float y);
+  enum Type {
+    Health,
+    Armor,
+    Mana,
+    Gem
+  };
+private:
+  Type type_;
+public:
+
+  Collectable(Level &level, float x, float y, Type type);
 
   virtual void update() override {}
 

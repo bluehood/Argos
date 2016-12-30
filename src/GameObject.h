@@ -8,9 +8,20 @@
 class Level;
 
 class GameObject {
+protected:
+  bool ShouldBeRemoved_ = false;
+  b2Body* Body = nullptr;
 public:
+  virtual ~GameObject() {
+    if (Body)
+    Body->GetWorld()->DestroyBody(Body);
+  }
   virtual void update() {}
   virtual void render(sf::RenderTarget& target) {}
+  bool shouldBeRemoved() const {
+    return ShouldBeRemoved_;
+  }
+
 };
 
 #endif //ARGOS_GAMEOBJECT_H

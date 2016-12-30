@@ -7,8 +7,6 @@
 
 class Stone : public GameObject {
 
-  b2Body* Body;
-
   sf::Texture texture;
 
 public:

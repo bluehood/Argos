@@ -6,7 +6,6 @@
 #include <gamedata/TileData.h>
 
 class Tile : public GameObject {
-  b2Body* Body = nullptr;
 
   TileData* Data = nullptr;
 

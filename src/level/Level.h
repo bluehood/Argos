@@ -139,8 +139,13 @@ public:
 
   void update() {
     time += 1 / 60.0;
-    for (GameObject* o : Objects)
-      o->update();
+    for (auto I = Objects.begin(); I != Objects.end(); ++I) {
+      (*I)->update();
+      if ((*I)->shouldBeRemoved()) {
+        delete *I;
+        I = Objects.erase(I);
+      }
+    }
   }
 
   void add(GameObject* o) {

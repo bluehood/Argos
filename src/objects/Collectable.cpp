@@ -1,7 +1,22 @@
 #include "Collectable.h"
 
-Collectable::Collectable(Level &level, float x, float y) {
-  sprite_ = level.getData().getSprite("hearth");
+Collectable::Collectable(Level &level, float x, float y, Type type) : type_(type) {
+  std::string spriteName;
+  switch(type) {
+    case Health:
+      spriteName = "health";
+      break;
+    case Armor:
+      spriteName = "armor";
+      break;
+    case Gem:
+      spriteName = "gem";
+      break;
+    case Mana:
+      spriteName = "mana";
+      break;
+  }
+  sprite_ = level.getData().getSprite(spriteName);
 
   sprite_.setOrigin(sprite_.getLocalBounds().width / 2,
                     sprite_.getLocalBounds().height / 2);
@@ -42,6 +57,5 @@ Collectable::Collectable(Level &level, float x, float y) {
 }
 
 void Collectable::apply(Character &c) {
-  Logger l;
-  l << "Foo" << l;
+  ShouldBeRemoved_ = true;
 }

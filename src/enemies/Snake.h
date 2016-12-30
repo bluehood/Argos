@@ -7,7 +7,6 @@
 class Snake : public GameObject {
 
   bool looksRight = true;
-  b2Body* Body;
   sf::Texture texture;
   Level* level_;
 

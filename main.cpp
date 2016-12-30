@@ -27,7 +27,7 @@ int main() {
   Level level(40, 40, Data);
 
   for (int i = 0; i < 4; ++i)
-    level.add(new Collectable(level, 80 * i, 0));
+    level.add(new Collectable(level, 80 * i, 0, Collectable::Health));
 
   Character* player = new Character(level, 40, 40);
   level.add(player);
