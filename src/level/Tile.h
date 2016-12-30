@@ -77,6 +77,8 @@ public:
     FixtureDef.density = 10.f;
     FixtureDef.friction = 0.9f;
     FixtureDef.shape = &Shape;
+    FixtureDef.filter.categoryBits = B2D_LEVEL;
+    FixtureDef.userData = (void *) this;
     Body->CreateFixture(&FixtureDef);
     Body->SetUserData((void*)this);
   }

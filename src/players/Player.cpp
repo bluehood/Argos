@@ -21,6 +21,9 @@ Character::Character(Level &level, float x, float y) {
   FixtureDef.density = 1.f;
   FixtureDef.friction = 0.0f;
   FixtureDef.shape = &Shape;
+  FixtureDef.userData = (void *) this;
+  FixtureDef.filter.categoryBits = B2D_PLAYER;
+  FixtureDef.filter.maskBits = B2D_ENEMY | B2D_ITEM | B2D_LEVEL;
   Body->CreateFixture(&FixtureDef);
   Body->SetUserData((void*)this);
 }

@@ -27,6 +27,7 @@ public:
     FixtureDef.density = 5.f;
     FixtureDef.friction = 0.9f;
     FixtureDef.shape = &Shape;
+    FixtureDef.userData = (void *) this;
     Body->CreateFixture(&FixtureDef);
     Body->SetUserData((void*)this);
   }

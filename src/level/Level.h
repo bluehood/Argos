@@ -5,10 +5,11 @@
 #include <gamedata/GameData.h>
 #include <GameObject.h>
 #include "Tile.h"
+#include "ContactChecker.h"
 
 class Level {
 
-  GameData& data;
+  GameData& Data_;
   std::vector<GameObject *> Objects;
   std::vector<Tile> Tiles;
   size_t w;
@@ -41,6 +42,7 @@ class Level {
     }
     return true;
   }
+
 
   std::string getSuffix(std::vector<int> s) {
     if (compatible(s, {2, 0, 2, 0, 1, 2, 1, 2}))
@@ -89,7 +91,7 @@ class Level {
     for (size_t x = 0; x < w; ++x) {
       for (size_t y = 0; y < h; ++y) {
         if (rand() % 100 < 30)
-          get(x, y).setData(World, data["cave"]);
+          get(x, y).setData(World, Data_["cave"]);
       }
     }
 
@@ -97,7 +99,7 @@ class Level {
       for (size_t y = 0; y < h; ++y) {
         if (!get(x, y).empty()) {
           std::string name = get(x, y).name();
-          get(x, y).setData(World, data[name + getSuffix(surroundings(x, y))]);
+          get(x, y).setData(World, Data_[name + getSuffix(surroundings(x, y))]);
         }
       }
     }
@@ -106,7 +108,7 @@ class Level {
   Tile dummyTile;
 
 public:
-  Level(size_t w, size_t h, GameData& data) : data(data), World({0, GRAVITY}), w(w), h(h) {
+  Level(size_t w, size_t h, GameData& data) : Data_(data), World({0, GRAVITY}), w(w), h(h) {
     background.loadFromFile("background.png");
     background.setRepeated(true);
     Tiles.resize(w * h);
@@ -120,15 +122,11 @@ public:
   }
   b2World World;
 
-  class HasContact : public b2ContactListener {
-    void BeginContact(b2Contact* contact) {
-    }
+  GameData& getData() {
+    return Data_;
+  }
 
-    void EndContact(b2Contact* contact) {
-    }
-  };
-
-  HasContact hasContact;
+  ContactChecker hasContact;
   double time = 0;
 
   Tile& get(int x, int y) {
@@ -151,7 +149,7 @@ public:
 
   void render(sf::RenderTarget& target) {
     sf::Sprite back(background);
-    back.setTextureRect({0, 0, target.getView().getSize().x, target.getView().getSize().y});
+    back.setTextureRect({0, 0, (int) target.getView().getSize().x, (int) target.getView().getSize().y});
     target.draw(back);
 
     for (Tile& t : Tiles)

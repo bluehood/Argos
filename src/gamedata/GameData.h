@@ -7,20 +7,12 @@
 #include <iostream>
 #include <Logger.h>
 #include "TileData.h"
+#include "TextureAtlas.h"
 
 class GameData {
 
-  std::vector<TileSet*> TileSets;
+  std::vector<TextureAtlas*> TextureAtlas_;
   std::unordered_map<std::string, TileData*> Tiles;
-
-  const sf::Sprite& getSprite(const std::string& id) {
-    for (TileSet* ts : TileSets) {
-      if (ts->contains(id)) {
-        return (*ts)[id];
-      }
-    }
-    assert(false);
-  }
 
   void addTile(const std::string& name, const std::string& baseName, bool passable = false) {
     Tiles[name] = new TileData(name, baseName);
@@ -55,10 +47,19 @@ public:
   }
 
   virtual ~GameData() {
-    for (TileSet* s : TileSets)
+    for (TextureAtlas* s : TextureAtlas_)
       delete s;
     for (auto& s : Tiles)
       delete s.second;
+  }
+
+  const sf::Sprite& getSprite(const std::string& id) {
+    for (TextureAtlas* ts : TextureAtlas_) {
+      if (ts->contains(id)) {
+        return (*ts)[id];
+      }
+    }
+    assert(false);
   }
 
   TileData* operator[](const std::string& id) {
@@ -80,9 +81,9 @@ public:
       filePath = path + "/" + filePath;
       if (fileType == "meta") {
         parseMetaFile(filePath);
-      } else if (fileType == "tiles") {
+      } else if (fileType == "texatlas") {
         mainLogger << "Loading tile set " << filePath << mainLogger;
-        TileSets.push_back(new TileSet(filePath));
+        TextureAtlas_.push_back(new TextureAtlas(filePath));
       } else {
         mainLogger << "Unknown file type in meta file " << path << "/meta.dat: "
                    << mainLogger;

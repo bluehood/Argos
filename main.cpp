@@ -10,6 +10,7 @@
 #include <players/Player.h>
 #include <enemies/Snake.h>
 #include <objects/Stone.h>
+#include <objects/Collectable.h>
 
 
 int main() {
@@ -25,11 +26,8 @@ int main() {
 
   Level level(40, 40, Data);
 
-  /** Prepare textures */
-  sf::Texture GroundTexture;
-  sf::Texture BoxTexture;
-  GroundTexture.loadFromFile("stone.png");
-  BoxTexture.loadFromFile("box.png");
+  for (int i = 0; i < 4; ++i)
+    level.add(new Collectable(level, 80 * i, 0));
 
   Character* player = new Character(level, 40, 40);
   level.add(player);
@@ -44,7 +42,7 @@ int main() {
         return 0;
       }
       if (event.type == sf::Event::EventType::KeyPressed) {
-        if (event.key.code == sf::Keyboard::Space)
+        if (event.key.code == sf::Keyboard::LShift)
           player->jump();
         if (event.key.code == sf::Keyboard::Escape)
           return 0;
