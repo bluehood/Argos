@@ -65,13 +65,13 @@ public:
     destroyBody(World);
 
     b2BodyDef BodyDef;
-    BodyDef.position = b2Vec2(x, y);
+    BodyDef.position = b2Vec2(x, y - (0.5f - (Data->height() / 2.0f) / SCALE));
     BodyDef.type = b2_staticBody;
     BodyDef.fixedRotation = true;
     Body = World.CreateBody(&BodyDef);
 
     b2PolygonShape Shape;
-    Shape.SetAsBox((32.f / 2) / SCALE, (32.f / 2) / SCALE);
+    Shape.SetAsBox((32.f / 2) / SCALE, (Data->height() / 2) / SCALE);
     b2FixtureDef FixtureDef;
     FixtureDef.density = 10.f;
     FixtureDef.friction = 0.9f;
@@ -89,20 +89,22 @@ public:
   }
 
   void render(sf::RenderTarget& target) {
-    if (!Body)
-      return;
     if (!Data)
       return;
 
     sf::Sprite sprite = Data->sprite();
 
     sprite.setOrigin(16.f, 16.f);
-    sprite.setPosition(SCALE * Body->GetPosition().x,
-                       SCALE * Body->GetPosition().y);
-    sprite.setRotation(Body->GetAngle() * 180 / b2_pi);
+    sprite.setPosition(SCALE * x,
+                       SCALE * y);
     target.draw(sprite);
   }
 
+  bool platform() const {
+    if (!Data)
+      return false;
+    return Data->platform();
+  }
 };
 
 

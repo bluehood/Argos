@@ -4,6 +4,7 @@
 
 #include <GameObject.h>
 #include <level/Tile.h>
+#include <iostream>
 
 class Character : public GameObject {
 
@@ -12,6 +13,10 @@ class Character : public GameObject {
   Level* level_;
 
   bool hangsOnCliff = false;
+
+  static constexpr float radius = 14.0f / SCALE;
+
+  bool fallThrough_ = false;
 public:
   Character(Level& level, float x, float y);
 
@@ -22,15 +27,52 @@ public:
   };
   MoveDirection MoveDir = MoveDirection::NONE;
 
+  void setFallThrough(bool v) {
+    if (v != fallThrough_) {
+      Body->SetAwake(true);
+    }
+    fallThrough_ = v;
+  }
+
   Tile& getTile(int dx = 0, int dy = 0);
 
+  void checkPlatsforms() {
+    for (b2ContactEdge* edge = Body->GetContactList(); edge; edge = edge->next) {
+      auto contact = edge->contact;
+
+      auto A = (GameObject*) contact->GetFixtureA()->GetBody()->GetUserData();
+      auto B = (GameObject*) contact->GetFixtureB()->GetBody()->GetUserData();
+      b2WorldManifold worldManifold;
+      contact->GetWorldManifold(&worldManifold);
+      double d;
+      Tile* platform = nullptr;
+      if (auto T = dynamic_cast<Tile *>(A)) {
+        if (!T->platform())
+          continue;
+        platform = T;
+      } else if (auto T = dynamic_cast<Tile *>(A)) {
+        if (!T->platform())
+          continue;
+        platform = T;
+      }
+      if (!platform)
+        continue;
+
+      if (fallThrough_)
+        contact->SetEnabled(false);
+      else
+        contact->SetEnabled(Body->GetPosition().y + radius <= platform->getBody()->GetPosition().y);
+    }
+  }
+
   virtual void update() override {
+    checkPlatsforms();
     hangsOnCliff = false;
     switch(MoveDir) {
       case MoveDirection::LEFT:
         Body->SetLinearVelocity({-3, Body->GetLinearVelocity().y});
         looksRight = false;
-        if (getTile(-1).hasCliff() && hasContactInDirection(3.14, b2_pi)) {
+        if (getTile(-1).hasCliff() && hasContactInDirection(b2_pi, b2_pi)) {
           if ((int) (Body->GetPosition().y * 2) % 2 == 0) {
             if (Body->GetLinearVelocity().y >= 0) {
               Body->SetLinearVelocity({Body->GetLinearVelocity().x, 0});
@@ -108,6 +150,8 @@ public:
       Body->SetLinearVelocity({Body->GetLinearVelocity().x, -7});
     }
   }
+
+  float getYSpeed();
 };
 
 

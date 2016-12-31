@@ -44,6 +44,10 @@ public:
   GameData(const std::string& path) {
     parseMetaFile(path);
     addMetaTile("cave");
+
+    addTile("platform1", "platform", false);
+    Tiles["platform1"]->platform(true);
+    Tiles["platform1"]->height(6);
   }
 
   virtual ~GameData() {
@@ -66,8 +70,7 @@ public:
     auto I = Tiles.find(id);
     if (I != Tiles.end())
       return I->second;
-    std::cerr << "Couldn't find " << id << std::endl;
-    assert(false);
+    return nullptr;
   }
 
   Logger mainLogger;

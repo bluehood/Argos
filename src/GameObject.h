@@ -22,6 +22,10 @@ public:
     return ShouldBeRemoved_;
   }
 
+  b2Body* getBody() {
+    return Body;
+  }
+
 };
 
 #endif //ARGOS_GAMEOBJECT_H

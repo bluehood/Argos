@@ -13,10 +13,28 @@ class TileData {
   sf::Sprite sprite_;
   std::string name_;
   std::string baseName_;
+  bool platform_ = false;
+  size_t height_ = 32;
 
 public:
   TileData(const std::string& name, const std::string& baseName)
       : name_(name), baseName_(baseName) {
+  }
+
+  void platform(bool v) {
+    platform_ = v;
+  }
+
+  bool platform() const {
+    return platform_;
+  }
+
+  void height(size_t h) {
+    height_ = h;
+  }
+
+  size_t height() const {
+    return height_;
   }
 
   const std::string& baseName() const {

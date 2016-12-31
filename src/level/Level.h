@@ -87,23 +87,6 @@ class Level {
     return "";
   }
 
-  void levelGen() {
-    for (size_t x = 0; x < w; ++x) {
-      for (size_t y = 0; y < h; ++y) {
-        if (rand() % 100 < 30)
-          get(x, y).setData(World, Data_["cave"]);
-      }
-    }
-
-    for (size_t x = 0; x < w; ++x) {
-      for (size_t y = 0; y < h; ++y) {
-        if (!get(x, y).empty()) {
-          std::string name = get(x, y).name();
-          get(x, y).setData(World, Data_[name + getSuffix(surroundings(x, y))]);
-        }
-      }
-    }
-  }
 
   Tile dummyTile;
 
@@ -118,9 +101,21 @@ public:
         Tiles[x + y * w].y = y;
       }
     }
-    levelGen();
   }
   b2World World;
+
+
+  void finalize() {
+    for (size_t x = 0; x < w; ++x) {
+      for (size_t y = 0; y < h; ++y) {
+        if (!get(x, y).empty()) {
+          std::string name = get(x, y).name();
+          if (auto td = Data_[name + getSuffix(surroundings(x, y))])
+            get(x, y).setData(World, td);
+        }
+      }
+    }
+  }
 
   GameData& getData() {
     return Data_;

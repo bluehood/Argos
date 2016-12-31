@@ -25,3 +25,10 @@ cave_back 96 64 32 32
 grass1 160 64 32 32
 grass2 192 64 32 32
 hanging_dirt 224 64 32 32
+
+platform1 160 64 32 6
+platform2 192 64 32 6
+platform3 224 64 32 6
+platforml 160 70 32 18
+platformr 192 70 32 18
+platform_short 224 70 32 18

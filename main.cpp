@@ -11,6 +11,7 @@
 #include <enemies/Snake.h>
 #include <objects/Stone.h>
 #include <objects/Collectable.h>
+#include <level/LevelGen.h>
 
 
 int main() {
@@ -24,7 +25,9 @@ int main() {
 
   GameData Data(".");
 
-  Level level(40, 40, Data);
+  LevelGen gen;
+
+  Level& level = *gen.generate(Data);
 
   for (int i = 0; i < 4; ++i)
     level.add(new Collectable(level, 80 * i, 0, Collectable::Health));
@@ -57,6 +60,7 @@ int main() {
     } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
       player->MoveDir = Character::MoveDirection::LEFT;
     }
+    player->setFallThrough(sf::Keyboard::isKeyPressed(sf::Keyboard::S));
     level.update();
 
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {

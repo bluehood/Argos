@@ -15,7 +15,7 @@ Character::Character(Level &level, float x, float y) {
 
   b2CircleShape Shape;
   Shape.m_p.Set(0, 0);
-  Shape.m_radius = (14) / SCALE;
+  Shape.m_radius = radius;
 
   b2FixtureDef FixtureDef;
   FixtureDef.density = 1.f;
@@ -32,4 +32,8 @@ Tile &Character::getTile(int dx, int dy) {
   int tx = (int) (Body->GetPosition().x + 0.5f) + dx;
   int ty = (int) (Body->GetPosition().y + 0.5f) + dy;
   return level_->get(tx, ty);
+}
+
+float Character::getYSpeed() {
+  return Body->GetLinearVelocity().y;
 }
