@@ -26,9 +26,23 @@ grass1 160 64 32 32
 grass2 192 64 32 32
 hanging_dirt 224 64 32 32
 
-platform1 160 64 32 6
-platform2 192 64 32 6
-platform3 224 64 32 6
-platforml 160 70 32 18
-platformr 192 70 32 18
-platform_short 224 70 32 18
+platform    160 64 32 6
+platform_l  160 70 32 18
+platform_r  192 70 32 18
+platform_ul 160 70 32 18
+platform_u  160 64 32 6
+platform_ur 192 70 32 18
+platform_bl 160 70 32 18
+platform_b  160 64 32 6
+platform_br 192 70 32 18
+
+platform_wvu 224 70 32 18
+platform_wv  224 70 32 18
+platform_wvb 224 70 32 18
+
+platform_whl 160 70 32 18
+platform_wh  160 64 32 6
+platform_whr 192 70 32 18
+
+platform_f1 224 70 32 18
+platform_f2 224 70 32 18

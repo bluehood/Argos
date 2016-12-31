@@ -14,30 +14,32 @@ class GameData {
   std::vector<TextureAtlas*> TextureAtlas_;
   std::unordered_map<std::string, TileData*> Tiles;
 
-  void addTile(const std::string& name, const std::string& baseName, bool passable = false) {
+  void addTile(const std::string& name, const std::string& baseName, bool passable = false, bool platform = false, unsigned height = 32) {
     Tiles[name] = new TileData(name, baseName);
     Tiles[name]->sprite(getSprite(name));
     Tiles[name]->passable(passable);
+    Tiles[name]->platform(platform);
+    Tiles[name]->height(height);
   }
 
-  void addMetaTile(const std::string& name, bool passable = false) {
-    addTile(name + "_ul", name, passable);
-    addTile(name + "_u", name, passable);
-    addTile(name + "_ur", name, passable);
-    addTile(name + "_l", name, passable);
-    addTile(name, name, passable);
-    addTile(name + "_r", name, passable);
-    addTile(name + "_bl", name, passable);
-    addTile(name + "_b", name, passable);
-    addTile(name + "_br", name, passable);
-    addTile(name + "_wvu", name, passable);
-    addTile(name + "_wv", name, passable);
-    addTile(name + "_wvb", name, passable);
-    addTile(name + "_whl", name, passable);
-    addTile(name + "_wh", name, passable);
-    addTile(name + "_whr", name, passable);
-    addTile(name + "_f1", name, passable);
-    addTile(name + "_f2", name, passable);
+  void addMetaTile(const std::string& name, bool passable = false, bool platform = false, unsigned height = 32) {
+    addTile(name + "_ul", name, passable, platform, height);
+    addTile(name + "_u", name, passable, platform, height);
+    addTile(name + "_ur", name, passable, platform, height);
+    addTile(name + "_l", name, passable, platform, height);
+    addTile(name, name, passable, platform, height);
+    addTile(name + "_r", name, passable, platform, height);
+    addTile(name + "_bl", name, passable, platform, height);
+    addTile(name + "_b", name, passable, platform, height);
+    addTile(name + "_br", name, passable, platform, height);
+    addTile(name + "_wvu", name, passable, platform, height);
+    addTile(name + "_wv", name, passable, platform, height);
+    addTile(name + "_wvb", name, passable, platform, height);
+    addTile(name + "_whl", name, passable, platform, height);
+    addTile(name + "_wh", name, passable, platform, height);
+    addTile(name + "_whr", name, passable, platform, height);
+    addTile(name + "_f1", name, passable, platform, height);
+    addTile(name + "_f2", name, passable, platform, height);
   }
 
 public:
@@ -45,9 +47,8 @@ public:
     parseMetaFile(path);
     addMetaTile("cave");
 
-    addTile("platform1", "platform", false);
-    Tiles["platform1"]->platform(true);
-    Tiles["platform1"]->height(6);
+    addMetaTile("platform", false, true, 6);
+
   }
 
   virtual ~GameData() {
