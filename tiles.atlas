@@ -19,7 +19,7 @@ cave_whr 64 96 32 32
 cave_f1  96 96 32 32
 cave_f2 128 96 32 32
 
-night 96 32 32 32
+cave_to_night 96 32 32 32
 cave_back 96 64 32 32
 
 grass1 160 64 32 32

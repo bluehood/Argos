@@ -6,12 +6,16 @@
 #include <GameObject.h>
 #include "Tile.h"
 #include "ContactChecker.h"
+#include "TileMap.h"
+#include "AmbientTile.h"
 
 class Level {
 
   GameData& Data_;
   std::vector<GameObject *> Objects;
-  std::vector<Tile> Tiles;
+  TileMap<Tile> Tiles;
+  TileMap<AmbientTile> BackgroundTiles;
+  TileMap<AmbientTile> ForegroundTiles;
   size_t w;
   size_t h;
 
@@ -88,17 +92,21 @@ class Level {
   }
 
 
-  Tile dummyTile;
-
 public:
   Level(size_t w, size_t h, GameData& data) : Data_(data), World({0, GRAVITY}), w(w), h(h) {
     background.loadFromFile("background.png");
     background.setRepeated(true);
-    Tiles.resize(w * h);
+    Tiles = TileMap<Tile>(w, h);
+    BackgroundTiles = TileMap<AmbientTile>(w, h);
+    ForegroundTiles = TileMap<AmbientTile>(w, h);
     for (size_t x = 0; x < w; ++x) {
       for (size_t y = 0; y < h; ++y) {
-        Tiles[x + y * w].x = x;
-        Tiles[x + y * w].y = y;
+        Tiles.get(x, y).x = x;
+        Tiles.get(x, y).y = y;
+        BackgroundTiles.get(x, y) = AmbientTile(x, y);
+        if (y > 4)
+          BackgroundTiles.get(x, y).spriteName = y > 5 ? "cave_back" : "cave_to_night";
+        ForegroundTiles.get(x, y) = AmbientTile(x, y);
       }
     }
   }
@@ -125,20 +133,18 @@ public:
   double time = 0;
 
   Tile& get(int x, int y) {
-    if (x < 0 || x >= w || y < 0 || y >= h) {
-      dummyTile = Tile();
-      return dummyTile;
-    }
-    return Tiles[x + y * w];
+    return Tiles.get(x, y);
   }
 
   void update() {
     time += 1 / 60.0;
-    for (auto I = Objects.begin(); I != Objects.end(); ++I) {
+    for (auto I = Objects.begin(); I != Objects.end();) {
       (*I)->update();
       if ((*I)->shouldBeRemoved()) {
         delete *I;
         I = Objects.erase(I);
+      } else {
+        ++I;
       }
     }
   }
@@ -147,11 +153,15 @@ public:
     Objects.push_back(o);
   }
 
-  void render(sf::RenderTarget& target) {
-    sf::Sprite back(background);
-    back.setTextureRect({0, 0, (int) target.getView().getSize().x, (int) target.getView().getSize().y});
-    target.draw(back);
+  void render(sf::RenderTarget& target, sf::Vector2f center) {
+//    sf::Sprite back(background);
+//    back.setTextureRect({0, 0, target.getView().getSize().x + 100, target.getView().getSize().y + 100});
+//    back.setOrigin(back.getLocalBounds().width / 2, back.getLocalBounds().height / 2);
+//    back.setPosition(center);
+//    target.draw(back);
 
+    for (AmbientTile& t : BackgroundTiles)
+      t.render(Data_, target);
     for (Tile& t : Tiles)
       t.render(target);
     for (GameObject* o : Objects)

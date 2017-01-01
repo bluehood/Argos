@@ -1,5 +1,6 @@
 #include "Player.h"
 #include <level/Level.h>
+#include <Projectile.h>
 
 Character::Character(Level &level, float x, float y) {
   level_ = &level;
@@ -38,20 +39,73 @@ float Character::getYSpeed() {
 }
 
 void Character::render(sf::RenderTarget &target) {
-  sf::Sprite sprite;
-  if (MoveDir != MoveDirection::NONE) {
-    int walkSpriteId = ((int) ((level_->time - startWalkingTime) * 10)) % 7 + 1;
-    sprite = level_->getData().getSprite("player_walk_" + std::to_string(walkSpriteId));
-  } else {
-    startWalkingTime = level_->time;
-    sprite = level_->getData().getSprite("player_idle");
-  }
-  if (looksRight)
-    sprite.scale(-1, 1);
+  if (hangsOnCliff) {
 
-  sprite.setOrigin(11.f, 14.f);
-  sprite.setPosition(SCALE * Body->GetPosition().x,
-                     SCALE * Body->GetPosition().y);
-  sprite.setRotation(Body->GetAngle() * 180 / b2_pi);
-  target.draw(sprite);
+    sf::Sprite sprite = level_->getData().getSprite("player_cliff");
+
+    sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
+    if (looksRight)
+      sprite.scale(-1, 1);
+    sprite.setPosition(SCALE * Body->GetPosition().x,
+                       SCALE * Body->GetPosition().y);
+    target.draw(sprite);
+    return;
+  }
+
+  {
+    sf::Sprite sprite = level_->getData().getSprite("player_body");
+
+    sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height);
+    if (looksRight)
+      sprite.scale(-1, 1);
+    sprite.setPosition(SCALE * Body->GetPosition().x,
+                       SCALE * Body->GetPosition().y);
+    target.draw(sprite);
+  }
+
+  {
+    sf::Sprite sprite;
+    if (!hasContactInDirection(-b2_pi/2, b2_pi * 0.9f)) {
+      startWalkingTime = level_->time;
+      sprite = level_->getData().getSprite("player_jump");
+    } else if (MoveDir != MoveDirection::NONE) {
+      int walkSpriteId = ((int) ((level_->time - startWalkingTime) * 10)) % 7 + 1;
+      sprite = level_->getData().getSprite(
+          "player_walk_" + std::to_string(walkSpriteId));
+    } else {
+      startWalkingTime = level_->time;
+      sprite = level_->getData().getSprite("player_idle");
+    }
+
+    sprite.setOrigin(sprite.getLocalBounds().width / 2, 0);
+    if (looksRight)
+      sprite.scale(-1, 1);
+    sprite.setPosition(SCALE * Body->GetPosition().x,
+                       SCALE * Body->GetPosition().y);
+    target.draw(sprite);
+  }
+
+  {
+    sf::Sprite sprite = level_->getData().getSprite("weapon_shotgun");
+
+    if (looksRight)
+      sprite.scale(-1, 1);
+    sprite.setPosition(SCALE * Body->GetPosition().x,
+                       SCALE * Body->GetPosition().y - 1);
+    target.draw(sprite);
+  }
+  {
+    sf::Sprite sprite = level_->getData().getSprite("player_arm");
+
+    if (looksRight)
+      sprite.scale(-1, 1);
+    sprite.setPosition(SCALE * Body->GetPosition().x,
+                       SCALE * Body->GetPosition().y - 1);
+    target.draw(sprite);
+  }
+}
+
+void Character::shoot() {
+  level_->add(new Projectile(*level_, getBody()->GetPosition().x + 11 / SCALE, getBody()->GetPosition().y - 2 / SCALE,
+                             {(looksRight ? 1 : -1) * 10.0F, 0}));
 }

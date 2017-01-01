@@ -45,6 +45,8 @@ public:
   }
 
   bool hasCliff() const {
+    if (platform())
+      return false;
     if (name().size() < 2)
       return false;
     if (name()[name().size() - 2] == 'u')

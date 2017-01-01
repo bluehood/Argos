@@ -27,6 +27,7 @@ public:
   };
   MoveDirection MoveDir = MoveDirection::NONE;
 
+
   void setFallThrough(bool v) {
     if (v != fallThrough_) {
       Body->SetAwake(true);
@@ -72,7 +73,7 @@ public:
       case MoveDirection::LEFT:
         Body->SetLinearVelocity({-3, Body->GetLinearVelocity().y});
         looksRight = false;
-        if (getTile(-1).hasCliff() && hasContactInDirection(b2_pi, b2_pi)) {
+        if (getTile(-1).hasCliff() && hasContactInDirection(b2_pi, b2_pi / 4)) {
           if ((int) (Body->GetPosition().y * 2) % 2 == 0) {
             if (Body->GetLinearVelocity().y >= 0) {
               Body->SetLinearVelocity({Body->GetLinearVelocity().x, 0});
@@ -85,7 +86,7 @@ public:
       case MoveDirection::RIGHT:
         Body->SetLinearVelocity({3, Body->GetLinearVelocity().y});
         looksRight = true;
-        if (getTile(1).hasCliff() && hasContactInDirection(0, b2_pi)) {
+        if (getTile(1).hasCliff() && hasContactInDirection(0, b2_pi / 4)) {
           if ((int) (Body->GetPosition().y * 2) % 2 == 0) {
             if (Body->GetLinearVelocity().y >= 0) {
               Body->SetLinearVelocity({Body->GetLinearVelocity().x, 0});
@@ -142,6 +143,8 @@ public:
   }
 
   float getYSpeed();
+
+  void shoot();
 };
 
 

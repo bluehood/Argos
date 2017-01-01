@@ -5,6 +5,7 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <unordered_map>
 #include <fstream>
+#include <Logger.h>
 
 class TextureAtlas {
   sf::Texture texture;
@@ -13,12 +14,32 @@ public:
   TextureAtlas(const std::string& basePath) {
     texture.loadFromFile(basePath + ".png");
     std::ifstream infile(basePath + ".atlas");
-    std::string id;
-    int x, y, wx, wy;
+    std::string id, centerKeyword;
+    int x, y, wx, wy, cx, cy;
+    bool needsId = true;
 
-    while (infile >> id >> x >> y >> wx >> wy) {
+    while (true) {
+      if (needsId) {
+        if (!(infile >> id))
+          break;
+      } else
+        id = centerKeyword;
+
+      if (!(infile >> x >> y >> wx >> wy))
+        break;
+
       sf::Sprite sprite(texture);
       sprite.setTextureRect({x, y, wx, wy});
+
+      infile >> centerKeyword;
+      if (centerKeyword == "center") {
+        infile >> cx >> cy;
+        sprite.setOrigin(cx - x, cy - y);
+        needsId = true;
+      } else {
+        needsId = false;
+      }
+
       Sprites[id] = sprite;
     }
   }

@@ -7,6 +7,7 @@ static const uint16_t B2D_LEVEL =  1 << 0;
 static const uint16_t B2D_PLAYER = 1 << 1;
 static const uint16_t B2D_ENEMY =  1 << 2;
 static const uint16_t B2D_ITEM =   1 << 3;
+static const uint16_t B2D_BULLET =  1 << 4;
 
 /** We need this to easily convert between pixel and real-world coordinates*/
 static constexpr float SCALE = 32.f;

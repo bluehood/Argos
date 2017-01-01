@@ -8,7 +8,7 @@ Level *LevelGen::generate(GameData &data) {
       auto decision = rand() % 100;
       if (decision < 30)
         level->get(x, y).setData(level->World, data["cave"]);
-      else if (decision < 55)
+      else if (decision < 35)
         level->get(x, y).setData(level->World, data["platform"]);
 
     }
