@@ -1,0 +1,9 @@
+player_walk_1 10 5 28 32
+player_walk_2 38 5 28 32 
+player_walk_3 66 5 28 32 
+player_walk_4 94 5 28 32 
+player_walk_5 122 5 28 32 
+player_walk_6 150 5 28 32 
+player_walk_7 178 5 28 32 
+player_idle 10 43 28 32
+player_jump 37 41 28 34

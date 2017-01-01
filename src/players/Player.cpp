@@ -3,7 +3,6 @@
 
 Character::Character(Level &level, float x, float y) {
   level_ = &level;
-  texture.loadFromFile("player.png");
 
   b2BodyDef BodyDef;
   BodyDef.position = b2Vec2(x / SCALE, y / SCALE);
@@ -36,4 +35,23 @@ Tile &Character::getTile(int dx, int dy) {
 
 float Character::getYSpeed() {
   return Body->GetLinearVelocity().y;
+}
+
+void Character::render(sf::RenderTarget &target) {
+  sf::Sprite sprite;
+  if (MoveDir != MoveDirection::NONE) {
+    int walkSpriteId = ((int) ((level_->time - startWalkingTime) * 10)) % 7 + 1;
+    sprite = level_->getData().getSprite("player_walk_" + std::to_string(walkSpriteId));
+  } else {
+    startWalkingTime = level_->time;
+    sprite = level_->getData().getSprite("player_idle");
+  }
+  if (looksRight)
+    sprite.scale(-1, 1);
+
+  sprite.setOrigin(11.f, 14.f);
+  sprite.setPosition(SCALE * Body->GetPosition().x,
+                     SCALE * Body->GetPosition().y);
+  sprite.setRotation(Body->GetAngle() * 180 / b2_pi);
+  target.draw(sprite);
 }

@@ -9,9 +9,9 @@
 class Character : public GameObject {
 
   bool looksRight = true;
-  sf::Texture texture;
   Level* level_;
 
+  double startWalkingTime = 0;
   bool hangsOnCliff = false;
 
   static constexpr float radius = 14.0f / SCALE;
@@ -101,17 +101,7 @@ public:
     }
   }
 
-  virtual void render(sf::RenderTarget& target) override {
-    sf::Sprite sprite(texture);
-    if (looksRight)
-      sprite.scale(-1, 1);
-
-    sprite.setOrigin(11.f, 14.f);
-    sprite.setPosition(SCALE * Body->GetPosition().x,
-                       SCALE * Body->GetPosition().y);
-    sprite.setRotation(Body->GetAngle() * 180 / b2_pi);
-    target.draw(sprite);
-  }
+  virtual void render(sf::RenderTarget& target) override;
 
   bool hasContactInDirection(double direction, double precision) {
     for (b2ContactEdge* edge = Body->GetContactList(); edge; edge = edge->next) {
