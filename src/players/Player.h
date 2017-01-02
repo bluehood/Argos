@@ -59,11 +59,24 @@ public:
       if (!platform)
         continue;
 
+
       if (fallThrough_)
         contact->SetEnabled(false);
       else
         contact->SetEnabled(Body->GetPosition().y + radius <= platform->getBody()->GetPosition().y);
     }
+  }
+
+  void pushCliff() {
+    int yTilePart = ((int) (Body->GetPosition().y * 4)) % 4;
+
+    if (yTilePart == 0) {
+      if (Body->GetLinearVelocity().y >= 0) {
+        Body->SetLinearVelocity({Body->GetLinearVelocity().x, 0});
+        Body->ApplyForceToCenter({0, -GRAVITY}, true);
+      }
+    }
+    hangsOnCliff = true;
   }
 
   virtual void update() override {
@@ -73,27 +86,15 @@ public:
       case MoveDirection::LEFT:
         Body->SetLinearVelocity({-3, Body->GetLinearVelocity().y});
         looksRight = false;
-        if (getTile(-1).hasCliff() && hasContactInDirection(b2_pi, b2_pi / 4)) {
-          if ((int) (Body->GetPosition().y * 2) % 2 == 0) {
-            if (Body->GetLinearVelocity().y >= 0) {
-              Body->SetLinearVelocity({Body->GetLinearVelocity().x, 0});
-              Body->ApplyForceToCenter({0, -GRAVITY}, true);
-            }
-          }
-          hangsOnCliff = true;
+        if (getTile(-1).hasCliff()  && hasTileContact(-1, 0)) {
+          pushCliff();
         }
         break;
       case MoveDirection::RIGHT:
         Body->SetLinearVelocity({3, Body->GetLinearVelocity().y});
         looksRight = true;
-        if (getTile(1).hasCliff() && hasContactInDirection(0, b2_pi / 4)) {
-          if ((int) (Body->GetPosition().y * 2) % 2 == 0) {
-            if (Body->GetLinearVelocity().y >= 0) {
-              Body->SetLinearVelocity({Body->GetLinearVelocity().x, 0});
-              Body->ApplyForceToCenter({0, -GRAVITY}, true);
-            }
-          }
-          hangsOnCliff = true;
+        if (getTile(1).hasCliff() && hasTileContact(1, 0)) {
+          pushCliff();
         }
         break;
       case MoveDirection::NONE:
@@ -107,6 +108,7 @@ public:
   bool hasContactInDirection(double direction, double precision) {
     for (b2ContactEdge* edge = Body->GetContactList(); edge; edge = edge->next) {
       auto contact = edge->contact;
+
       if (!contact->IsTouching())
         continue;
 
@@ -124,6 +126,28 @@ public:
         return true;
       if (std::abs(d - direction) - b2_pi < precision)
         return true;
+    }
+    return false;
+  }
+
+  bool hasTileContact(int x, int y) {
+    for (b2ContactEdge* edge = Body->GetContactList(); edge; edge = edge->next) {
+      auto contact = edge->contact;
+      if (!contact->IsTouching())
+        continue;
+
+      auto A = (GameObject*) contact->GetFixtureA()->GetBody()->GetUserData();
+      auto B = (GameObject*) contact->GetFixtureB()->GetBody()->GetUserData();
+
+      Tile *T;
+      if ((T = dynamic_cast<Tile *>(A))) {
+      } else if ((T = dynamic_cast<Tile *>(B))) {
+      } else {
+        continue;
+      }
+      if (&getTile(x, y) == T)  {
+        return true;
+      }
     }
     return false;
   }
