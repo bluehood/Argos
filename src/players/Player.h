@@ -14,7 +14,7 @@ class Character : public GameObject {
   double startWalkingTime = 0;
   bool hangsOnCliff = false;
 
-  static constexpr float height = 14.0f / SCALE;
+  static constexpr float height = 15.0f / SCALE;
   static constexpr float width = 10.0f / SCALE;
 
   bool fallThrough_ = false;
