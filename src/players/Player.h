@@ -14,7 +14,8 @@ class Character : public GameObject {
   double startWalkingTime = 0;
   bool hangsOnCliff = false;
 
-  static constexpr float radius = 14.0f / SCALE;
+  static constexpr float height = 14.0f / SCALE;
+  static constexpr float width = 10.0f / SCALE;
 
   bool fallThrough_ = false;
 public:
@@ -63,7 +64,7 @@ public:
       if (fallThrough_)
         contact->SetEnabled(false);
       else
-        contact->SetEnabled(Body->GetPosition().y + radius <= platform->getBody()->GetPosition().y);
+        contact->SetEnabled(Body->GetPosition().y + height <= platform->getBody()->GetPosition().y);
     }
   }
 

@@ -13,9 +13,20 @@ Character::Character(Level &level, float x, float y) {
 
   level.World.SetContactListener(&level.hasContact);
 
-  b2CircleShape Shape;
-  Shape.m_p.Set(0, 0);
-  Shape.m_radius = radius;
+  float bottomWidth = width * 0.95f;
+  float bottomHeight = height * 0.95f;
+
+  b2Vec2 vertices[6];
+  vertices[0].Set(-width,  -height);
+  vertices[1].Set( width,  -height);
+  vertices[2].Set( width, bottomHeight);
+  vertices[3].Set( bottomWidth,  height);
+  vertices[4].Set(-bottomWidth,  height);
+  vertices[5].Set(-width,  bottomHeight);
+
+  b2PolygonShape Shape;
+  Shape.Set(vertices, 6);
+
 
   b2FixtureDef FixtureDef;
   FixtureDef.density = 1.f;
